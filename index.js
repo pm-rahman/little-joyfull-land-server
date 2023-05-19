@@ -33,6 +33,12 @@ async function run() {
             const result = await toyCollection.find().toArray();
             res.send(result);
         })
+        app.get('/toy-category', async (req, res) => {
+            const category = req.query.category;
+            const query = { subCategory: req.query.category }
+            const result = await toyCollection.find(query).toArray();
+            res.send(result);
+        })
         app.get('/user-toys', async (req, res) => {
             const email = req.query.email;
             const query = { email: req.query.email }
