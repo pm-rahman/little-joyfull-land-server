@@ -29,17 +29,13 @@ async function run() {
 
         const toyCollection = client.db('little-joyful-land').collection('toys');
 
-        app.get('/users', async (req, res) => {
-            const result = await usersCollection.find().toArray();
-            res.send(result);
-        })
         app.get('/toys', async (req, res) => {
             const result = await toyCollection.find().toArray();
             res.send(result);
         })
         app.get('/user-toys', async (req, res) => {
             const email = req.query.email;
-            const query = { email : req.query.email }
+            const query = { email: req.query.email }
             const result = await toyCollection.find(query).toArray();
             res.send(result);
         })
@@ -54,12 +50,27 @@ async function run() {
             const result = await toyCollection.insertOne(toy);
             res.send(result);
         })
-
-        app.delete('/toys/:id',async(req,res)=>{
+        app.patch('/update/:id', async (req, res) => {
             const id = req.params.id;
-            const query = {_id:new ObjectId(id)}
-            const result = await toyCollection.deleteOne(query);
+            const updatedToy = req.body
+            const query = { _id: new ObjectId(id) };
+            const updateDoc = {
+                $set: {
+                    price: updatedToy.price,
+                    quantity: updatedToy.quantity,
+                    description: updatedToy.updatedToy
+
+                }
+            }
+            const result = await toyCollection.updateOne(query,updateDoc);
+            console.log(result);
             res.send(result);
+        })
+        app.delete('/user-toys/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) }
+            const result = await toyCollection.deleteOne(query);
+            res.send(result)
         })
 
 
