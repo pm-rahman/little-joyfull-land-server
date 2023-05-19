@@ -35,8 +35,14 @@ async function run() {
         })
         app.get('/toy-category', async (req, res) => {
             const category = req.query.category;
-            const query = { subCategory: req.query.category }
-            const result = await toyCollection.find(query).toArray();
+            const query = { subCategory: req.query.category };
+            const limit = 10;
+            const result = await toyCollection.find(query).limit(limit).toArray();
+            res.send(result);
+        })
+        app.get('/highlightProduct', async (req, res) => {
+            const limit = 6;
+            const result = await toyCollection.find().limit(limit).toArray();
             res.send(result);
         })
         app.get('/user-toys', async (req, res) => {
