@@ -29,8 +29,16 @@ async function run() {
 
         const toyCollection = client.db('little-joyful-land').collection('toys');
 
+        // 
+        const indexKeys = { toyName: 1, }; // Replace field1 and field2 with your actual field names
+        const indexOptions = { name: "toyName" }; // Replace index_name with the desired index name
+        const result = await toyCollection.createIndex(indexKeys, indexOptions);
+        // db.toyCollection.createIndex({toyName:"text"})
+        
+
+        // get method
         app.get('/toys', async (req, res) => {
-            const result = await toyCollection.find().toArray();
+            const result = await toyCollection.find().limit(20).toArray();
             res.send(result);
         })
         app.get('/toy-category', async (req, res) => {
@@ -46,7 +54,6 @@ async function run() {
             res.send(result);
         })
         app.get('/user-toys', async (req, res) => {
-            const email = req.query.email;
             const query = { email: req.query.email }
             const result = await toyCollection.find(query).toArray();
             res.send(result);
@@ -57,6 +64,18 @@ async function run() {
             const result = await toyCollection.findOne(query);
             res.send(result);
         })
+        app.get("/searchToy/:text", async (req, res) => {
+            const text = req.params.text;
+            const result = await toyCollection.find({
+                $or: [
+                  { toyName: { $regex: text, $options: "i" } },
+                ],
+              }).toArray();
+            res.send(result);
+        });
+
+
+        // other method
         app.post('/toy', async (req, res) => {
             const toy = req.body;
             const result = await toyCollection.insertOne(toy);
@@ -74,8 +93,7 @@ async function run() {
 
                 }
             }
-            const result = await toyCollection.updateOne(query,updateDoc);
-            console.log(result);
+            const result = await toyCollection.updateOne(query, updateDoc);
             res.send(result);
         })
         app.delete('/user-toys/:id', async (req, res) => {
