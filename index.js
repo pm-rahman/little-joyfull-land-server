@@ -30,15 +30,22 @@ async function run() {
         const toyCollection = client.db('little-joyful-land').collection('toys');
 
         // 
-        const indexKeys = { toyName: 1, }; // Replace field1 and field2 with your actual field names
-        const indexOptions = { name: "toyName" }; // Replace index_name with the desired index name
+        const indexKeys = { toyName: 1, };
+        const indexOptions = { name: "toyName" };
         const result = await toyCollection.createIndex(indexKeys, indexOptions);
-        // db.toyCollection.createIndex({toyName:"text"})
-        
+
 
         // get method
+        app.get('/allToys',async(req,res)=>{
+            const result = await toyCollection.find().toArray()
+            res.send(result);
+        })
         app.get('/toys', async (req, res) => {
-            const result = await toyCollection.find().limit(20).toArray();
+            // console.log(req.query);
+            const limit = parseInt(req.query.limit) || 20;
+            const page = parseInt(req.query.page) || 0;
+            const skip = limit * page;
+            const result = await toyCollection.find().skip(skip).limit(limit).toArray();
             res.send(result);
         })
         app.get('/toy-category', async (req, res) => {
@@ -67,10 +74,8 @@ async function run() {
         app.get("/searchToy/:text", async (req, res) => {
             const text = req.params.text;
             const result = await toyCollection.find({
-                $or: [
-                  { toyName: { $regex: text, $options: "i" } },
-                ],
-              }).toArray();
+                toyName: { $regex: text }
+            }).toArray();
             res.send(result);
         });
 
