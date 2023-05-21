@@ -87,6 +87,7 @@ async function run() {
         // other method
         app.post('/toy', async (req, res) => {
             const toy = req.body;
+            console.log(toy);
             const result = await toyCollection.insertOne(toy);
             res.send(result);
         })
@@ -98,7 +99,7 @@ async function run() {
                 $set: {
                     price: updatedToy.price,
                     quantity: updatedToy.quantity,
-                    description: updatedToy.updatedToy
+                    description: updatedToy.description
 
                 }
             }
