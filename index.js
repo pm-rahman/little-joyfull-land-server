@@ -133,5 +133,3 @@ app.get('/', (req, res) => {
 app.listen(port, () => {
     console.log(`Little Joyful Land made in road ${port}`)
 })
-
-module.exports = app;
