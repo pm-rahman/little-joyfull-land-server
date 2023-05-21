@@ -27,15 +27,15 @@ async function run() {
     try {
         // Connect the client to the server	(optional starting in v4.7)
 
-        client.connect();
+        // client.connect();
 
         const db = client.db('little-joyful-land');
         const toyCollection = db.collection('toys');
 
         // 
-        const indexKeys = { toyName: 1, };
-        const indexOptions = { name: "toyName" };
-        const result = await toyCollection.createIndex(indexKeys, indexOptions);
+        // const indexKeys = { toyName: 1, };
+        // const indexOptions = { name: "toyName" };
+        // await toyCollection.createIndex(indexKeys, indexOptions);
 
 
 
